@@ -54,4 +54,4 @@ pnpm build
 
 ## License
 
-ISC 
+[MIT](./LICENSE) License © 2025-PRESENT [centuryeggs](https://github.com/centuryeggs)
