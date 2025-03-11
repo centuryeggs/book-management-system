@@ -56,7 +56,7 @@ const Home: React.FC = () => {
   return (
     <div className="flex flex-col h-screen px-32 py-16">
       <h1 className="text-2xl font-bold mb-4">Book Management System</h1>
-      <div className="flex gap-4">
+      <div className="flex gap-4 mb-4">
         <Input
           className="w-72"
           placeholder="Please enter book name"
@@ -69,19 +69,20 @@ const Home: React.FC = () => {
         </Button>
         <AddBookDialog />
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex gap-4">
         {bookList.map((book) => (
-          <Card key={book.id}>
+          <Card key={book.id} className="w-80 h-100">
             <CardHeader>
-              <CardTitle>{book.name}</CardTitle>
-              <CardDescription>{book.author}</CardDescription>
+              <img src={book.cover} alt={book.name} width={100} height={100} />
             </CardHeader>
             <CardContent>
-              <p>{book.description}</p>
+              <p className="text-sm text-gray-500">{book.description}</p>
+              <CardTitle>{book.name}</CardTitle>
+              <CardDescription>{book.author}</CardDescription>
             </CardContent>
             <CardFooter>
-              <Button variant="outline">Edit</Button>
-              <Button variant="outline">Delete</Button>
+              <Button className="cursor-pointer mr-2" variant="outline">Edit</Button>
+              <Button className="cursor-pointer" variant="outline">Delete</Button>
             </CardFooter>
           </Card>
         ))}
