@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Plus } from "lucide-react";
 import axios from "axios";
 import { useState } from "react";
-
+import { toast } from "sonner";
 interface AddBookForm {
   name: string;
   author: string;
@@ -23,8 +23,16 @@ interface AddBookForm {
 
 const AddBookDialog = () => {
   const addBook = () => {
-    axios.post("http://localhost:3000/book/add", addBookForm).then((res) => {
+    axios.post("http://localhost:3000/book/create", addBookForm).then((res) => {
       console.log("add book success", res);
+      toast.success("Add book success");
+    }).catch((err) => {
+      console.log("add book failed", err);
+      if (err.response.status === 400) {
+        toast.error(err.response.data.message);
+      } else {
+        toast.error("Add book failed");
+      }
     });
   };
   const [addBookForm, setAddBookForm] = useState<AddBookForm>({
@@ -62,6 +70,9 @@ const AddBookDialog = () => {
               <Input
                 id="name"
                 value={addBookForm.name}
+                onChange={(e) => {
+                  setAddBookForm({ ...addBookForm, name: e.target.value });
+                }}
                 className="col-span-3"
               />
             </div>
@@ -72,6 +83,9 @@ const AddBookDialog = () => {
               <Input
                 id="username"
                 value={addBookForm.author}
+                onChange={(e) => {
+                  setAddBookForm({ ...addBookForm, author: e.target.value });
+                }}
                 className="col-span-3"
               />
             </div>
@@ -82,6 +96,9 @@ const AddBookDialog = () => {
               <Input
                 id="description"
                 value={addBookForm.description}
+                onChange={(e) => {
+                  setAddBookForm({ ...addBookForm, description: e.target.value });
+                }}
                 className="col-span-3"
               />
             </div>
@@ -92,6 +109,9 @@ const AddBookDialog = () => {
               <Input
                 id="cover"
                 value={addBookForm.cover}
+                onChange={(e) => {
+                  setAddBookForm({ ...addBookForm, cover: e.target.value });
+                }}
                 className="col-span-3"
               />
             </div>
