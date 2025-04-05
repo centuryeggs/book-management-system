@@ -53,25 +53,24 @@ const SignUp: React.FC = () => {
   
   const navigate = useNavigate();
 
-  const submit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
-    // 处理注册逻辑
-    axios.post('http://localhost:3000/user/register', {
-      username: values.username,
-      password: values.password,
-    }).then((res: any) => {
-      if (res.data.statusCode === 400) {
-        toast.error(res.data.message);
-      } else {
-        toast.success(res.data.message);
-        // 注册成功后跳转到登录页
-        setTimeout(() => {
-          navigate('/login');
-        }, 1500);
-      }
-    }).catch((err: any) => {
-      toast.error(err?.message || 'Registration failed');
-    });
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // Handle registration logic
+    axios
+      .post("http://localhost:3000/auth/register", {
+        username: form.getValues("username"),
+        password: form.getValues("password"),
+      })
+      .then((res) => {
+        console.log(res);
+        toast.success("Registration successful");
+        // Redirect to login page after successful registration
+        navigate("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.response.data.message);
+      });
   };
 
   return (
@@ -83,7 +82,7 @@ const SignUp: React.FC = () => {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(submit)} className="grid w-full items-center gap-3">
+            <form onSubmit={handleSubmit} className="grid w-full items-center gap-3">
               <FormField
                 control={form.control}
                 name="username"

@@ -4,7 +4,7 @@ import SignUp from './pages/SignUp';
 import RootLayout from './components/RootLayout';
 import Home from './pages/Home';
 
-// 路由配置
+// Route configuration
 const router = createBrowserRouter([
   {
     path: '/',
@@ -22,15 +22,11 @@ const router = createBrowserRouter([
         path: '/signup',
         element: <SignUp />,
       },
-      // 可以在这里添加更多路由
+      // Add more routes here
       // {
-      //   path: 'dashboard',
-      //   element: <Dashboard />,
-      //   // 可以添加子路由
-      //   children: [
-      //     { path: 'profile', element: <Profile /> },
-      //     { path: 'settings', element: <Settings /> },
-      //   ],
+      //   path: '/example',
+      //   element: <Example />,
+      //   // You can add child routes here
       // },
     ],
   },

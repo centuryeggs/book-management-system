@@ -8,8 +8,17 @@ import { Book } from './entities/book.entity';
 export class BookService {
   constructor(private readonly dbService: DbService) {}
 
-  async list() {
-    return await this.dbService.read();
+  async list(query: any) {
+    const { name } = query
+    const list = await this.dbService.read()
+    if (name) {
+      const results = list.filter(i => {
+        return i.name.includes(name)
+      })
+      return results;
+    } else {
+      return list
+    }
   }
   async findById(id: number) {
     const books: Book[] = await this.dbService.read();

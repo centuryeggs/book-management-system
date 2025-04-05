@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   BadRequestException,
   UploadedFile,
+  Query,
 } from '@nestjs/common';
 import { BookService } from './book.service';
 import { CreateBookDto } from './dto/create-book.dto';
@@ -21,8 +22,8 @@ import { storage } from './my-file-storage';
 export class BookController {
   constructor(private readonly bookService: BookService) {}
   @Get('list')
-  async list() {
-    return this.bookService.list();
+  async list(@Query() query: any) {
+    return this.bookService.list(query);
   }
   @Get(':id')
   async findById(@Param('id') id: string) {

@@ -18,7 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { toast } from "sonner"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -51,20 +51,21 @@ const Login: React.FC = () => {
     axios.post('http://localhost:3000/user/login', {
       username: values.username,
       password: values.password,
-    }).then((res: any) => {
+    }).then((res: { data: { statusCode?: number; message: string } }) => {
       if (res.data.statusCode === 400) {
         toast.error(res.data.message);
       } else {
-        toast.success(res.data.message);
-        // 跳转至首页
-        navigate('/');
+        console.log(res);
+        toast.success("Login successful");
+        // Redirect to home page
+        navigate("/");
       }
-    }).catch((err: any) => {
+    }).catch((err: AxiosError<{ statusCode: number; message: string }>) => {
       console.log(err?.response?.data);
       if (err?.response?.data?.statusCode === 400) {
-        toast.error(err?.response?.data?.message);
+        toast.error(err.response.data.message);
       } else {
-        toast.error(err?.message || 'Login failed');
+        toast.error('Login failed');
       }
     });
   };

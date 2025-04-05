@@ -10,44 +10,47 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus } from "lucide-react";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Edit } from "lucide-react";
 
-interface AddBookDialogProps {
-  onSuccess?: () => void;
-}
-
-interface AddBookForm {
+interface EditBookForm {
+  id?: string;
   name: string;
   author: string;
   description: string;
   cover: string;
 }
 
-const AddBookDialog: React.FC<AddBookDialogProps> = ({ onSuccess }) => {
-  const [open, setOpen] = useState(false)
-  const addBook = () => {
-    axios.post("http://localhost:3000/book/create", addBookForm).then((res) => {
-      console.log("add book success", res);
-      toast.success("Add book success");
+interface EditBookDialogProps {
+  book: EditBookForm;
+  onSuccess?: () => void;
+}
+
+const EditBookDialog: React.FC<EditBookDialogProps> = ({ book, onSuccess }) => {
+  const [open, setOpen] = useState(false);
+  const editBook = () => {
+    axios.put(`http://localhost:3000/book/update`, editBookForm).then((res) => {
+      console.log("edit book success", res);
+      toast.success("Edit book success");
       setOpen(false);
       onSuccess?.();
     }).catch((err) => {
-      console.log("add book failed", err);
+      console.log("edit book failed", err);
       if (err.response.status === 400) {
         toast.error(err.response.data.message);
       } else {
-        toast.error("Add book failed");
+        toast.error("Edit book failed");
       }
     });
   };
-  const [addBookForm, setAddBookForm] = useState<AddBookForm>({
-    name: "",
-    author: "",
-    description: "",
-    cover: "",
+  const [editBookForm, setEditBookForm] = useState<EditBookForm>({
+    id: book.id,
+    name: book.name,
+    author: book.author,
+    description: book.description,
+    cover: book.cover,
   });
 
   const handleCoverChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +68,7 @@ const AddBookDialog: React.FC<AddBookDialogProps> = ({ onSuccess }) => {
       });
       
       if (response.data.code === 200) {
-        setAddBookForm({ ...addBookForm, cover: response.data.data });
+        setEditBookForm({ ...editBookForm, cover: response.data.data });
         toast.success('Cover uploaded successfully');
       }
     } catch (error) {
@@ -73,24 +76,25 @@ const AddBookDialog: React.FC<AddBookDialogProps> = ({ onSuccess }) => {
       toast.error('Failed to upload cover');
     }
   };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="cursor-pointer">
-          <Plus className="w-4 h-4" />
-          Add Book
+          <Edit className="w-4 h-4" />
+          Edit
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Book</DialogTitle>
+          <DialogTitle>Edit Book</DialogTitle>
           <DialogDescription>
-            Add a new book here. Click save when you're done.
+            Edit a new book here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
         <form
           onSubmit={(event) => {
-            addBook();
+            editBook();
             event.preventDefault();
           }}
         >
@@ -101,9 +105,9 @@ const AddBookDialog: React.FC<AddBookDialogProps> = ({ onSuccess }) => {
               </Label>
               <Input
                 id="name"
-                value={addBookForm.name}
+                value={editBookForm.name}
                 onChange={(e) => {
-                  setAddBookForm({ ...addBookForm, name: e.target.value });
+                  setEditBookForm({ ...editBookForm, name: e.target.value });
                 }}
                 className="col-span-3"
               />
@@ -114,9 +118,9 @@ const AddBookDialog: React.FC<AddBookDialogProps> = ({ onSuccess }) => {
               </Label>
               <Input
                 id="username"
-                value={addBookForm.author}
+                value={editBookForm.author}
                 onChange={(e) => {
-                  setAddBookForm({ ...addBookForm, author: e.target.value });
+                  setEditBookForm({ ...editBookForm, author: e.target.value });
                 }}
                 className="col-span-3"
               />
@@ -127,9 +131,9 @@ const AddBookDialog: React.FC<AddBookDialogProps> = ({ onSuccess }) => {
               </Label>
               <Input
                 id="description"
-                value={addBookForm.description}
+                value={editBookForm.description}
                 onChange={(e) => {
-                  setAddBookForm({ ...addBookForm, description: e.target.value });
+                  setEditBookForm({ ...editBookForm, description: e.target.value });
                 }}
                 className="col-span-3"
               />
@@ -153,11 +157,11 @@ const AddBookDialog: React.FC<AddBookDialogProps> = ({ onSuccess }) => {
                   }
                 }}
                 onClick={() => {
-                  document.getElementById('cover-upload')?.click();
+                  document.getElementById('cover-upload-edit')?.click();
                 }}
               >
                 <input
-                  id="cover-upload"
+                  id="cover-upload-edit"
                   type="file"
                   accept="image/*"
                   onChange={handleCoverChange}
@@ -166,9 +170,9 @@ const AddBookDialog: React.FC<AddBookDialogProps> = ({ onSuccess }) => {
                 <div className="text-sm text-gray-600">
                   Drag and drop image here or click to upload
                 </div>
-                {addBookForm.cover && (
+                {editBookForm.cover && (
                   <img
-                    src={'http://localhost:3000/' + addBookForm.cover}
+                    src={'http://localhost:3000/' + editBookForm.cover}
                     alt="Preview"
                     className="mt-2 max-h-40 object-contain"
                   />
@@ -185,4 +189,4 @@ const AddBookDialog: React.FC<AddBookDialogProps> = ({ onSuccess }) => {
   );
 };
 
-export default AddBookDialog;
+export default EditBookDialog;
